@@ -20,7 +20,7 @@ public class Edge
     public Door.STATE doorState = Door.STATE.OPEN;
     public Door door = null;
 
-    public Edge(Node n1, Node n2,  Door.STATE state = Door.STATE.OPEN)
+    public Edge(Node n1, Node n2, Door.STATE state = Door.STATE.OPEN)
     {
         node0 = n1;
         node1 = n2;
@@ -33,13 +33,21 @@ public class GraphManager : MonoBehaviour
     [SerializeField]
     public int primaryPathSize = 5;
 
-    List<Node> adj = new List<Node>();
+    public List<Node> adj { get; set; } = new List<Node>();
+    public static GraphManager Instance;
 
     Vector2Int[] directions = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.left, Vector2Int.down };
     List<Vector2Int> allLocations = new List<Vector2Int>() { Vector2Int.zero };
 
     List<int> currentSecPathPoss = new List<int>();
-    void Awake(){
+    void Awake()
+    {
+        if(Instance == null)
+
+        {
+            Instance = this;
+        }
+
         InitGraph(); // graph main path
 
         for (int i = 1; i < primaryPathSize; i++)
@@ -101,13 +109,16 @@ public class GraphManager : MonoBehaviour
         foreach (Node node in adj)
         {
             var toLog = node.name + "(" + node.location.x + "," + node.location.y + ")" + " : connected to ";
-            foreach(Edge edge in node.adjacents)
+            foreach (Edge edge in node.adjacents)
             {
                 toLog += edge.node1.name;
-                switch (edge.doorState){
-                    case Door.STATE.CLOSED: toLog += "(locked)";
+                switch (edge.doorState)
+                {
+                    case Door.STATE.CLOSED:
+                        toLog += "(locked)";
                         break;
-                    case Door.STATE.SECRET: toLog += "(secret)";
+                    case Door.STATE.SECRET:
+                        toLog += "(secret)";
                         break;
                 }
                 toLog += " ";
@@ -134,7 +145,7 @@ public class GraphManager : MonoBehaviour
     List<Vector2Int> PossibleNextLocations(Node fromNode)
     {
         List<Vector2Int> poss = new List<Vector2Int>();
-        foreach(Vector2Int vec in directions)
+        foreach (Vector2Int vec in directions)
         {
             if (!allLocations.Contains(fromNode.location + vec))
                 poss.Add(fromNode.location + vec);
