@@ -12,9 +12,9 @@ public class Generator : MonoBehaviour
     private int _instanciateRoom = 0;
 
     public List<GameObject> PrefabsOneDoor;
-    public List<GameObject> PrefabsTwoDoor;
-    public List<GameObject> PrefabsThreeDoor;
-    public List<GameObject> PrefabsFourthDoor;
+    public List<GameObject> PrefabsTwoDoors;
+    public List<GameObject> PrefabsThreeDoors;
+    public List<GameObject> PrefabsFourDoors;
 
     // Start is called before the first frame update
     void Start()
@@ -33,8 +33,10 @@ public class Generator : MonoBehaviour
         foreach (Node _node in GraphManager.Instance.adj)
         {
             int nbDoor = _node.adjacents.Count;
-            GameObject roomGO = Instantiate(SelectPrefab(nbDoor), new Vector3(_node.location.x * RealSizeRoomX, _node.location.y * RealSizeRoomY, 0), Quaternion.identity);
+            GameObject roomGO = Instantiate(SelectPrefab(_node), new Vector3(_node.location.x * RealSizeRoomX, _node.location.y * RealSizeRoomY, 0), Quaternion.identity);
+
             Room _room = roomGO.GetComponent<Room>();
+            SetRoomDoors(_room, _node);
             _room.position = _node.location;
 
             if (_node.name == "Start")
@@ -50,28 +52,46 @@ public class Generator : MonoBehaviour
             }
         }
     }
-
-    GameObject SelectPrefab(int _nbRoom)
+    GameObject SelectPrefab(Node _node)
     {
-        switch (_nbRoom)
+        List<Vector2Int> allDoorsDirections = new List<Vector2Int>();
+
+        // store all the doors directions
+        foreach (Edge edge in _node.adjacents)
+        {
+            allDoorsDirections.Add(edge.node1.location - _node.location);
+        }
+
+        // NOPE
+        switch (_node.adjacents.Count)
         {
             case 1:
                 return PrefabsOneDoor[UnityEngine.Random.Range(0, PrefabsOneDoor.Count - 1)];
-
             case 2:
-                return PrefabsTwoDoor[UnityEngine.Random.Range(0, PrefabsTwoDoor.Count - 1)];
+                return PrefabsTwoDoors[UnityEngine.Random.Range(0, PrefabsTwoDoors.Count - 1)];
             case 3:
-                return PrefabsThreeDoor[UnityEngine.Random.Range(0, PrefabsThreeDoor.Count - 1)];
+                return PrefabsThreeDoors[UnityEngine.Random.Range(0, PrefabsThreeDoors.Count - 1)];
             case 4:
-                return PrefabsFourthDoor[UnityEngine.Random.Range(0, PrefabsFourthDoor.Count - 1)];
+                return PrefabsFourDoors[UnityEngine.Random.Range(0, PrefabsFourDoors.Count - 1)];
 
             default:
                 return null;
         }
-
     }
-
-
+    void SetRoomDoors(Room room, Node node)
+    {
+        foreach(Door door in room.connectedDoors)
+        {
+            door.transform.LookAt(door.transform.position - room.transform.position);
+            var correspondingEdge = node.adjacents.SingleOrDefault(i => i.orientation == Utils.OrientationToDir(door.Orientation));
+            if (correspondingEdge == null)
+            {
+                door.SetState(Door.STATE.WALL);
+                return;
+            }
+            door.SetState(correspondingEdge.doorState);
+        }
+    }
 
     /*   void SpawnRoomLetRec(Node _node, bool _isStart = false )
    {

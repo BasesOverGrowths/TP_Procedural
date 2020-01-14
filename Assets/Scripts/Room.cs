@@ -11,6 +11,7 @@ public class Room : MonoBehaviour {
 	private TilemapGroup _tilemapGroup;
 
 	public static List<Room> allRooms = new List<Room>();
+    public List<Door> connectedDoors = new List<Door>();
 
     void Awake()
     {

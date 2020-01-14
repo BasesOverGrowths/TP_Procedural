@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 4836116453364013422}
   - component: {fileID: 4836116453364013419}
   m_Layer: 0
-  m_Name: Room_4Doors 4
+  m_Name: Room_1Door2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -155,6 +155,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isStartRoom: 0
   position: {x: 0, y: 0}
+  connectedDoors:
+  - {fileID: 216267659538903045}
 --- !u!50 &4836116453364013419
 Rigidbody2D:
   serializedVersion: 4
@@ -966,18 +968,30 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e220ae9ccd75bd04fa295d970d7c2202, type: 3}
---- !u!4 &9100509993184637264 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2807283877054237857, guid: e220ae9ccd75bd04fa295d970d7c2202,
-    type: 3}
-  m_PrefabInstance: {fileID: 6394821540337581553}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1007008281948703437 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6144991255345215292, guid: e220ae9ccd75bd04fa295d970d7c2202,
     type: 3}
   m_PrefabInstance: {fileID: 6394821540337581553}
   m_PrefabAsset: {fileID: 0}
+--- !u!4 &9100509993184637264 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2807283877054237857, guid: e220ae9ccd75bd04fa295d970d7c2202,
+    type: 3}
+  m_PrefabInstance: {fileID: 6394821540337581553}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &216267659538903045 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6610912639909285364, guid: e220ae9ccd75bd04fa295d970d7c2202,
+    type: 3}
+  m_PrefabInstance: {fileID: 6394821540337581553}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1007008281948703437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 713f1094d6bc49a4d93b8279be3707bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &6417285990000267312
 PrefabInstance:
   m_ObjectHideFlags: 0

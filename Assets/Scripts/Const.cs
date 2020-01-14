@@ -70,7 +70,21 @@ public static class Utils {
 		}
 	}
 
-	public static ORIENTATION OppositeOrientation(ORIENTATION orientation)
+
+    // Transform an direction ORIENTATION direction (why not?)
+    /*public static Vector2Int DirToOrientation(Vector2Int dir)
+    {
+        switch (dir)
+        {
+            case Vector2Int.up: return ORIENTATION.NORTH;
+            case ORIENTATION.EAST: return new Vector2Int(1, 0);
+            case ORIENTATION.SOUTH: return new Vector2Int(0, -1);
+            case ORIENTATION.WEST: return new Vector2Int(-1, 0);
+            default: return new Vector2Int(0, 0);
+        }
+    }*/
+
+    public static ORIENTATION OppositeOrientation(ORIENTATION orientation)
 	{
 		switch (orientation)
 		{

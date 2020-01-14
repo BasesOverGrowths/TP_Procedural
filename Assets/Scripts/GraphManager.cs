@@ -18,13 +18,14 @@ public class Edge
     public Node node0;
     public Node node1;
     public Door.STATE doorState = Door.STATE.OPEN;
-    public Door door = null;
+    public Vector2Int orientation;
 
     public Edge(Node n1, Node n2, Door.STATE state = Door.STATE.OPEN)
     {
         node0 = n1;
         node1 = n2;
         doorState = state;
+        orientation = node1.location - node0.location;
     }
 }
 
@@ -71,6 +72,15 @@ public class GraphManager : MonoBehaviour
         {
             adj[adjIndex].adjacents.Last.Value.doorState = Door.STATE.CLOSED; // closes the door to the next main path room
             adj[adjIndex + 1].adjacents.First.Value.doorState = Door.STATE.CLOSED; // closes the door at the other end (next room)
+
+            if (offset != 0) {
+                var nextBranchTry = adj[adjIndex - (int)offset];
+                if (nextBranchTry.adjacents.Count == 4 || nextBranchTry.name == "Start") // can't do a sub branch if no free path, nor if the node is the start (rule)
+                {
+                    Debug.Log("Couldn't do an offset of -" + offset + " on " + nextBranchTry.name + "(" + nextBranchTry.location.x + "," + nextBranchTry.location.y + ")");
+                    offset = 0;
+                }
+            }
             CreateNodeToNode(adj[adjIndex - (int)offset], "Sec" + (adjIndex - offset) + "_Generic0"); // creates the first room next to the chosen branch (at the end of the adj list)
         }
 
@@ -84,13 +94,15 @@ public class GraphManager : MonoBehaviour
     }
     void CreateSubPath(uint _offset = 0)
     {
-        var randomBranchRoom = Random.Range(2, primaryPathSize - 2);
-        CreatePathAt(randomBranchRoom, randomAvailableBranch(), true, _offset);
+        var randomBranchLength = Random.Range(2, primaryPathSize - 2);
+        CreatePathAt(randomBranchLength, randomAvailableBranch(), true, _offset);
     }
 
+    int currentMinimumBranchIndex = 0;
+    // create a random branch between the current minimum branch (default = 0) and the median value in the current branch starting node possibilities
     int randomAvailableBranch()
     {
-        var randSubPathStart = currentSecPathPoss[Random.Range(0, currentSecPathPoss.Count)];
+        var randSubPathStart = currentSecPathPoss[Random.Range(currentMinimumBranchIndex, currentSecPathPoss.Count / 2)];
         currentSecPathPoss.Remove(randSubPathStart);
         return randSubPathStart;
     }
@@ -130,16 +142,21 @@ public class GraphManager : MonoBehaviour
     void CreateNodeToNode(Node fromNode, string nodeName, Door.STATE state = Door.STATE.OPEN)
     {
         var node = new Node(nodeName);
-        InitNodeFrom(fromNode, node);
+        // check exception : no path found (rooms all around)
+        if (!InitNodeFrom(fromNode, node))
+            return;
         ConnectNodes(fromNode, node, state);
         adj.Add(node);
     }
 
-    void InitNodeFrom(Node fromNode, Node node)
+    bool InitNodeFrom(Node fromNode, Node node)
     {
         var possNextMoves = PossibleNextLocations(fromNode);
-        node.location = possNextMoves[Random.Range(0, possNextMoves.Count)]; ;
+        if (possNextMoves.Count == 0)
+            return false;
+        node.location = possNextMoves[Random.Range(0, possNextMoves.Count)];
         allLocations.Add(node.location);
+        return true;
     }
 
     List<Vector2Int> PossibleNextLocations(Node fromNode)
