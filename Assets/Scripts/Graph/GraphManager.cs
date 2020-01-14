@@ -29,12 +29,12 @@ public class Edge
 
 public class GraphManager : MonoBehaviour
 {
-    public int primaryPathSize = 5;
+    public int primaryPathSize = 3;
 
     List<Node> adj = new List<Node>();
 
     Vector2Int[] directions = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.left, Vector2Int.down };
-    List<Vector2Int> allLocations = new List<Vector2Int>();
+    List<Vector2Int> allLocations = new List<Vector2Int>() { Vector2Int.zero };
 
 
     void Awake(){
@@ -44,9 +44,13 @@ public class GraphManager : MonoBehaviour
     void InitGraph()
     {
         adj.Add(new Node("Start"));
-        CreateNodeToNode(adj[adj.Count - 1], "Generic0");
-        CreateNodeToNode(adj[adj.Count - 1], "Generic1", false);
-        CreateNodeToNode(adj[adj.Count - 1], "Generic2");
+
+        for (int i = 0; i < primaryPathSize; i++)
+        {
+            var nodeName = "Generic" + i;
+            CreateNodeToNode(adj[adj.Count - 1], nodeName);
+        }
+
         CreateNodeToNode(adj[adj.Count - 1], "End");
 
         PrintGraph();
