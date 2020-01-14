@@ -30,7 +30,8 @@ public class Edge
 
 public class GraphManager : MonoBehaviour
 {
-    public const int primaryPathSize = 5;
+    [SerializeField]
+    public int primaryPathSize = 5;
 
     List<Node> adj = new List<Node>();
 
@@ -46,28 +47,39 @@ public class GraphManager : MonoBehaviour
             currentSecPathPoss.Add(i);
         }
 
-        CreatePathAt(randomAvailableBranch(), Random.Range(2, primaryPathSize - 2), true);
-        CreatePathAt(randomAvailableBranch(), Random.Range(2, primaryPathSize - 2), true);
+        CreateSubPath();
+        CreateSubPath(1);
+        /*randomBranchRoom = Random.Range(2, primaryPathSize - 2);
+        CreatePathAt(Random.Range(2, primaryPathSize - 2), randomAvailableBranch(), true);
+        randomBranchRoom = Random.Range(2, primaryPathSize - 2);
+        CreatePathAt(Random.Range(2, primaryPathSize - 2), randomAvailableBranch(), true);*/
 
         PrintGraph();
     }
 
-    void CreatePathAt(int adjIndex, int length = primaryPathSize, bool isSecondary = false)
+    void CreatePathAt(int length, int adjIndex = 0, bool isSecondary = false, uint offset = 0)
     {
         if (isSecondary)
         {
             adj[adjIndex].adjacents.Last.Value.doorState = Door.STATE.CLOSED; // closes the door to the next main path room
-            CreateNodeToNode(adj[adjIndex], "Sec_Generic0");
+            adj[adjIndex + 1].adjacents.First.Value.doorState = Door.STATE.CLOSED; // closes the door at the other end (next room)
+            CreateNodeToNode(adj[adjIndex - (int)offset], "Sec" + (adjIndex - offset) + "_Generic0"); // creates the first room next to the chosen branch (at the end of the adj list)
         }
 
-
+        // creates a path from the room (default is the latest room created)
         for (int i = 0; i < length; i++)
         {
-            var nodeName = "Generic" + i;
-            if (isSecondary) nodeName = "Sec_" + nodeName;
-            CreateNodeToNode(adj[adjIndex + i], nodeName);
+            var nodeName = "Generic" + (i + 1);
+            if (isSecondary) nodeName = "Sec" + adjIndex + "_" + nodeName;
+            CreateNodeToNode(adj[adj.Count - 1], nodeName);
         }
     }
+    void CreateSubPath(uint _offset = 0)
+    {
+        var randomBranchRoom = Random.Range(2, primaryPathSize - 2);
+        CreatePathAt(randomBranchRoom, randomAvailableBranch(), true, _offset);
+    }
+
     int randomAvailableBranch()
     {
         var randSubPathStart = currentSecPathPoss[Random.Range(0, currentSecPathPoss.Count)];
@@ -79,7 +91,7 @@ public class GraphManager : MonoBehaviour
     {
         adj.Add(new Node("Start"));
 
-        CreatePathAt(adj.Count - 1);
+        CreatePathAt(primaryPathSize);
 
         CreateNodeToNode(adj[adj.Count - 1], "End");
     }
