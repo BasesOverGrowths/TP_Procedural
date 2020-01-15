@@ -61,10 +61,11 @@ public class GraphManager : MonoBehaviour
         else
             Destroy(this);
 
-        for (int i = 1; i < primaryPathSize - 1; i++)
+        currentSecPathPoss = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8 };
+        /*for (int i = 1; i < primaryPathSize - 1; ++i)
         {
             currentSecPathPoss.Add(i);
-        }
+        }*/
 
         InitGraph(); // graph main path
 
@@ -122,9 +123,9 @@ public class GraphManager : MonoBehaviour
     int randomAvailableBranch()
     {
         var randSubPathStart = currentSecPathPoss[Random.Range(currentMinimumBranchIndex, (currentSecPathPoss.Count - currentMinimumBranchIndex) / 2)];
-        currentMinimumBranchIndex = randSubPathStart;
-        // currentSecPathPoss.RemoveRange(0, currentSecPathPoss.FindIndex(i => i == randSubPathStart + 1));
-        //currentSecPathPoss.Remove(randSubPathStart);
+        //currentMinimumBranchIndex = randSubPathStart;
+        currentSecPathPoss.RemoveRange(0, currentSecPathPoss.FindIndex(i => i == randSubPathStart + 1));
+        currentSecPathPoss.Remove(randSubPathStart);
         return randSubPathStart;
     }
 
