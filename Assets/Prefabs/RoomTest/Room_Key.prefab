@@ -154,13 +154,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abd64e0034f05b44581a553bb498242e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isStartRoom: 0
   position: {x: 0, y: 0}
   connectedDoors:
   - {fileID: 136926192317726590}
   - {fileID: 6323383911431593183}
   - {fileID: 8441451093288178057}
   - {fileID: 2726273451024879355}
+  roomType: 3
 --- !u!50 &4836116453364013419
 Rigidbody2D:
   serializedVersion: 4

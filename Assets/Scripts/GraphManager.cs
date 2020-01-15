@@ -40,13 +40,13 @@ public class Edge
 
 public class GraphManager : MonoBehaviour
 {
+    public static GraphManager Instance;
 
     public int primaryPathSize = 5;
 
-    private int subPathsCount = 3;
+    private int subPathsCount;
 
     public List<Node> adj { get; set; } = new List<Node>();
-    public static GraphManager Instance;
 
     Vector2Int[] directions = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.left, Vector2Int.down };
     List<Vector2Int> allLocations = new List<Vector2Int>() { Vector2Int.zero };
@@ -54,18 +54,19 @@ public class GraphManager : MonoBehaviour
     List<int> currentSecPathPoss = new List<int>();
     void Awake()
     {
-        if(Instance == null)
-
+        if (Instance == null)
         {
             Instance = this;
         }
+        else
+            Destroy(this);
 
-        InitGraph(); // graph main path
-
-        for (int i = 1; i < primaryPathSize; i++)
+        for (int i = 1; i < primaryPathSize - 1; i++)
         {
             currentSecPathPoss.Add(i);
         }
+
+        InitGraph(); // graph main path
 
         subPathsCount = Mathf.FloorToInt(primaryPathSize / 3);
         for (int i = 0; i < subPathsCount; i++)
@@ -112,15 +113,18 @@ public class GraphManager : MonoBehaviour
     void CreateSubPath(uint _offset = 0)
     {
         var randomBranchLength = Random.Range(2, primaryPathSize - 2);
-        CreatePathAt(randomBranchLength, randomAvailableBranch(), true, _offset);
+        int nextRandomBranch = randomAvailableBranch();
+        CreatePathAt(randomBranchLength, nextRandomBranch, true, _offset);
     }
 
     int currentMinimumBranchIndex = 0;
     // create a random branch between the current minimum branch (default = 0) and the median value in the current branch starting node possibilities
     int randomAvailableBranch()
     {
-        var randSubPathStart = currentSecPathPoss[Random.Range(currentMinimumBranchIndex, currentSecPathPoss.Count / 2)];
-        currentSecPathPoss.RemoveRange(0, currentSecPathPoss.FindIndex(i => i == randSubPathStart) + 1);
+        var randSubPathStart = currentSecPathPoss[Random.Range(currentMinimumBranchIndex, (currentSecPathPoss.Count - currentMinimumBranchIndex) / 2)];
+        currentMinimumBranchIndex = randSubPathStart;
+        // currentSecPathPoss.RemoveRange(0, currentSecPathPoss.FindIndex(i => i == randSubPathStart + 1));
+        //currentSecPathPoss.Remove(randSubPathStart);
         return randSubPathStart;
     }
 

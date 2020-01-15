@@ -5,18 +5,21 @@ using UnityEngine;
 
 public class Room : MonoBehaviour {
 
-    public bool isStartRoom = false;
 	public Vector2Int position = Vector2Int.zero;
 
 	private TilemapGroup _tilemapGroup;
 
 	public static List<Room> allRooms = new List<Room>();
+    [HideInInspector]
     public List<Door> connectedDoors = new List<Door>();
+
+    public Node.ROOM_TYPE roomType = 0;
 
     void Awake()
     {
 		_tilemapGroup = GetComponentInChildren<TilemapGroup>();
 		allRooms.Add(this);
+        connectedDoors.AddRange(GetComponentsInChildren<Door>());
 	}
 
 	private void OnDestroy()
@@ -25,7 +28,7 @@ public class Room : MonoBehaviour {
 	}
 
 	void Start () {
-        if(isStartRoom)
+        if (roomType == Node.ROOM_TYPE.START)
         {
             OnEnterRoom();
         }

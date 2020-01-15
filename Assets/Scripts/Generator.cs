@@ -10,7 +10,7 @@ public class Generator : MonoBehaviour
     const int RealSizeRoomX = 11;
     const int RealSizeRoomY = 9;
 
-    private int _instanciateRoom = 0;
+    //private int _instanciateRoom = 0;
 
     public List<GameObject> allRoomsPrefabs;
     public List<GameObject> PrefabsOneDoor;
@@ -31,12 +31,6 @@ public class Generator : MonoBehaviour
         SpawnRoom();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     private void SpawnRoom()
     {
         foreach (Node _node in GraphManager.Instance.adj)
@@ -49,15 +43,9 @@ public class Generator : MonoBehaviour
             SetRoomDoors(_room, _node);
             _room.position = _node.location;
 
-            if (_node.name == "Start")
-            {
-                _room.isStartRoom = true;
-                _room.name = "Start";
-            }
-
-            if (_node.name == "End")
-                _room.name = "End";
-
+            _room.name = _node.name;
+            //start / end fix
+            _room.roomType = _node.roomType;
         }
     }
     GameObject SelectPrefab(Node _node)
@@ -71,22 +59,17 @@ public class Generator : MonoBehaviour
         }
 
         var matchingRooms = new List<GameObject>();
-        switch (_node.roomType)
-        {
-            case Node.ROOM_TYPE.DEFAULT: case Node.ROOM_TYPE.START: case Node.ROOM_TYPE.END:
-                matchingRooms = allRoomsPrefabs.FindAll(i => MatchDoors(i, _node));
-                break;
-            case Node.ROOM_TYPE.KEYROOM:
-                matchingRooms = allRoomsPrefabs.FindAll(i => i.tag == "KeyRoom");
-                break;
-        }
-
+        matchingRooms = allRoomsPrefabs.FindAll(i => MatchDoors(i, _node));
+        
         return matchingRooms[Random.Range(0, matchingRooms.Count)];
     }
     bool MatchDoors(GameObject roomPrefab, Node node)
     {
-        if (node.roomType == Node.ROOM_TYPE.KEYROOM) // current patch for not choosing a Keyroom
-            return false;
+        if (node.roomType != Node.ROOM_TYPE.START && node.roomType != Node.ROOM_TYPE.END)
+        { // (patch now)
+            if (node.roomType != roomPrefab.GetComponent<Room>().roomType) // check if room matches node type 
+                return false;
+        }
 
         var roomDoors = roomPrefab.GetComponent<Room>().connectedDoors;
 
@@ -117,16 +100,6 @@ public class Generator : MonoBehaviour
                 return false;
         }
         return true;
-
-        /*
-        foreach(Door door in roomDoors)
-        {
-            var edge = node.adjacents.SingleOrDefault(i => i.orientation == Utils.OrientationToDir(door.Orientation));
-            if (edge == null || edge.doorState == Door.STATE.WALL)
-                return false;
-        }
-        return true;
-        */
     }
     void SetRoomDoors(Room room, Node node)
     {
