@@ -337,6 +337,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 1871783879802294157, guid: cd7c7fbed73ca5b45ad348e02c0339bc,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cd7c7fbed73ca5b45ad348e02c0339bc, type: 3}
 --- !u!1001 &6770029359082008602
@@ -405,6 +410,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GereneratorDungeon
+      objectReference: {fileID: 0}
+    - target: {fileID: 6770029358426176771, guid: 1f7499678fdadd44b8b928ddaeb80a83,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1f7499678fdadd44b8b928ddaeb80a83, type: 3}

@@ -44,6 +44,7 @@ public class Generator : MonoBehaviour
             _room.position = _node.location;
 
             _room.name = _node.name;
+
             //start / end fix
             _room.roomType = _node.roomType;
         }

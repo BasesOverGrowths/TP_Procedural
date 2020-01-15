@@ -61,11 +61,10 @@ public class GraphManager : MonoBehaviour
         else
             Destroy(this);
 
-        currentSecPathPoss = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 8 };
-        /*for (int i = 1; i < primaryPathSize - 1; ++i)
+        for (int i = 1; i < primaryPathSize - 1; ++i)
         {
             currentSecPathPoss.Add(i);
-        }*/
+        }
 
         InitGraph(); // graph main path
 
