@@ -313,6 +313,12 @@ public class Player : MonoBehaviour {
 
 	public void EnterRoom(Room room)
 	{
+        if (!_room)
+        {
+            var z = transform.position.z;
+            transform.position = (Vector3Int)room.position + room._GetWorldRoomBounds().extents;
+            transform.position.Set(transform.position.x, transform.position.y, z);
+        }
 		_room = room;
 	}
 

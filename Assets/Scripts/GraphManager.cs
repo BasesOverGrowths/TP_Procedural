@@ -7,10 +7,19 @@ public class Node
     public string name;
     public Vector2Int location = Vector2Int.zero;
     public LinkedList<Edge> adjacents = new LinkedList<Edge>();
+    public enum ROOM_TYPE
+    {
+        DEFAULT = 0,
+        START,
+        END,
+        KEYROOM
+    }
+    public ROOM_TYPE roomType = 0;
 
-    public Node(string name)
+    public Node(string name, ROOM_TYPE roomType)
     {
         this.name = name;
+        this.roomType = roomType;
     }
 }
 public class Edge
@@ -57,11 +66,7 @@ public class GraphManager : MonoBehaviour
         }
 
         CreateSubPath();
-        CreateSubPath(1);
-        /*randomBranchRoom = Random.Range(2, primaryPathSize - 2);
-        CreatePathAt(Random.Range(2, primaryPathSize - 2), randomAvailableBranch(), true);
-        randomBranchRoom = Random.Range(2, primaryPathSize - 2);
-        CreatePathAt(Random.Range(2, primaryPathSize - 2), randomAvailableBranch(), true);*/
+        CreateSubPath();
 
         PrintGraph();
     }
@@ -87,9 +92,16 @@ public class GraphManager : MonoBehaviour
         // creates a path from the room (default is the latest room created)
         for (int i = 0; i < length; i++)
         {
-            var nodeName = "Generic" + (i + 1);
+            var nodeName = "";
+            var roomType = Node.ROOM_TYPE.DEFAULT;
+            if (isSecondary && i == length - 1)
+            {
+                nodeName = "KeyRoom";
+                roomType = Node.ROOM_TYPE.KEYROOM;
+            }
+            else nodeName = "Generic" + (i + 1);
             if (isSecondary) nodeName = "Sec" + adjIndex + "_" + nodeName;
-            CreateNodeToNode(adj[adj.Count - 1], nodeName);
+            CreateNodeToNode(adj[adj.Count - 1], nodeName, roomType);
         }
     }
     void CreateSubPath(uint _offset = 0)
@@ -109,11 +121,11 @@ public class GraphManager : MonoBehaviour
 
     void InitGraph()
     {
-        adj.Add(new Node("Start"));
+        adj.Add(new Node("Start", Node.ROOM_TYPE.START));
 
         CreatePathAt(primaryPathSize);
 
-        CreateNodeToNode(adj[adj.Count - 1], "End");
+        CreateNodeToNode(adj[adj.Count - 1], "End", Node.ROOM_TYPE.END);
     }
 
     void PrintGraph()
@@ -139,9 +151,9 @@ public class GraphManager : MonoBehaviour
         }
     }
 
-    void CreateNodeToNode(Node fromNode, string nodeName, Door.STATE state = Door.STATE.OPEN)
+    void CreateNodeToNode(Node fromNode, string nodeName, Node.ROOM_TYPE roomType = Node.ROOM_TYPE.DEFAULT, Door.STATE state = Door.STATE.OPEN)
     {
-        var node = new Node(nodeName);
+        var node = new Node(nodeName, roomType);
         // check exception : no path found (rooms all around)
         if (!InitNodeFrom(fromNode, node))
             return;

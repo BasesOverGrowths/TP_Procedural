@@ -54,7 +54,7 @@ public class Room : MonoBehaviour {
 		return roomBounds;
     }
 
-    private Bounds _GetWorldRoomBounds()
+    public Bounds _GetWorldRoomBounds()
     {
         Bounds result = _GetLocalRoomBounds();
         result.center += transform.position;
