@@ -40,8 +40,10 @@ public class Edge
 
 public class GraphManager : MonoBehaviour
 {
-    [SerializeField]
+
     public int primaryPathSize = 5;
+
+    private int subPathsCount = 3;
 
     public List<Node> adj { get; set; } = new List<Node>();
     public static GraphManager Instance;
@@ -65,8 +67,11 @@ public class GraphManager : MonoBehaviour
             currentSecPathPoss.Add(i);
         }
 
-        CreateSubPath();
-        CreateSubPath();
+        subPathsCount = Mathf.FloorToInt(primaryPathSize / 3);
+        for (int i = 0; i < subPathsCount; i++)
+        {
+            CreateSubPath();
+        }
 
         PrintGraph();
     }
@@ -115,7 +120,7 @@ public class GraphManager : MonoBehaviour
     int randomAvailableBranch()
     {
         var randSubPathStart = currentSecPathPoss[Random.Range(currentMinimumBranchIndex, currentSecPathPoss.Count / 2)];
-        currentSecPathPoss.Remove(randSubPathStart);
+        currentSecPathPoss.RemoveRange(0, currentSecPathPoss.FindIndex(i => i == randSubPathStart) + 1);
         return randSubPathStart;
     }
 

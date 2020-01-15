@@ -327,7 +327,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68fd81c6a23ecd54fba5b6ed33ab2576, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  primaryPathSize: 5
+  primaryPathSize: 10
 --- !u!1 &1962054244 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1871783879802294157, guid: cd7c7fbed73ca5b45ad348e02c0339bc,

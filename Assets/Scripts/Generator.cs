@@ -85,6 +85,9 @@ public class Generator : MonoBehaviour
     }
     bool MatchDoors(GameObject roomPrefab, Node node)
     {
+        if (node.roomType == Node.ROOM_TYPE.KEYROOM) // current patch for not choosing a Keyroom
+            return false;
+
         var roomDoors = roomPrefab.GetComponent<Room>().connectedDoors;
 
         Utils.ORIENTATION orientation = Utils.ORIENTATION.NONE;
@@ -113,7 +116,7 @@ public class Generator : MonoBehaviour
             if (isDoor != isEdge)
                 return false;
         }
-        return (node.roomType != Node.ROOM_TYPE.KEYROOM); // current patch for not choosing a Keyroom
+        return true;
 
         /*
         foreach(Door door in roomDoors)
