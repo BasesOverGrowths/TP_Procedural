@@ -97,7 +97,7 @@ GameObject:
   - component: {fileID: 4836116453364013422}
   - component: {fileID: 4836116453364013419}
   m_Layer: 0
-  m_Name: Room_1D1K
+  m_Name: Room1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -154,10 +154,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abd64e0034f05b44581a553bb498242e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isStartRoom: 0
   position: {x: 0, y: 0}
   connectedDoors:
   - {fileID: 8441451093288178057}
+  roomType: 3
 --- !u!50 &4836116453364013419
 Rigidbody2D:
   serializedVersion: 4

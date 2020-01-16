@@ -45,6 +45,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   allRoomsPrefabs:
   - {fileID: 4836116453364013423, guid: f7c82a9fb1cbe7a4087c16d395254c58, type: 3}
+  - {fileID: 4836116453364013423, guid: f2fb7bd059c7d094f9eabaa7504e0914, type: 3}
+  - {fileID: 4836116453364013423, guid: 744adab65f9c2824daccfe98767cc519, type: 3}
+  - {fileID: 4836116453364013423, guid: b4720827ce4e8fa459a835a519c2adf5, type: 3}
+  - {fileID: 4836116453364013423, guid: 744adab65f9c2824daccfe98767cc519, type: 3}
+  - {fileID: 4836116453364013423, guid: e0d80b84e7f588f409792bee30020656, type: 3}
+  - {fileID: 4836116453364013423, guid: 0ce7d6cf36bdc744ebffc989e2606f1e, type: 3}
+  - {fileID: 4836116453364013423, guid: 8238894ac965363478eaaac750d9ffeb, type: 3}
+  - {fileID: 4836116453364013423, guid: 51ab751e39f358c4e86f51d368c1ddfe, type: 3}
+  - {fileID: 4836116453364013423, guid: 8a10a50b7e8017c4c895b54164d7b962, type: 3}
+  - {fileID: 4836116453364013423, guid: 54a7979555942c049bddedea0ad80ca8, type: 3}
+  - {fileID: 4836116453364013423, guid: 5eb275a770456b44f9e0402fa7ae4585, type: 3}
+  - {fileID: 4836116453364013423, guid: 9ca2febfa43a60741993e3ac9ebe1367, type: 3}
   PrefabsOneDoor:
   - {fileID: 4836116453364013423, guid: 94beed523d3b2fe48aadd400213398e6, type: 3}
   - {fileID: 4836116453364013423, guid: 536a31a720baca644bd3d59bf543dd7b, type: 3}

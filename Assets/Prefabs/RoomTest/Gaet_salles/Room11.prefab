@@ -157,7 +157,7 @@ MonoBehaviour:
   connectedDoors:
   - {fileID: 136926192317726590}
   - {fileID: 8441451093288178057}
-  roomType: 3
+  roomType: 0
 --- !u!50 &4836116453364013419
 Rigidbody2D:
   serializedVersion: 4

@@ -66,11 +66,11 @@ public class Generator : MonoBehaviour
     }
     bool MatchDoors(GameObject roomPrefab, Node node)
     {
-        if (node.roomType != Node.ROOM_TYPE.START && node.roomType != Node.ROOM_TYPE.END)
-        { // (patch now)
+        /*if (node.roomType != Node.ROOM_TYPE.START && node.roomType != Node.ROOM_TYPE.END)
+        { // (patch now)*/
             if (node.roomType != roomPrefab.GetComponent<Room>().roomType) // check if room matches node type 
                 return false;
-        }
+        //}
 
         var roomDoors = roomPrefab.GetComponent<Room>().connectedDoors;
 
@@ -97,7 +97,16 @@ public class Generator : MonoBehaviour
             var door = roomDoors.SingleOrDefault(y => y.Orientation == orientation);
             bool isDoor = door != null && door.State != Door.STATE.WALL;
             bool isEdge = edge != null && edge.doorState != Door.STATE.WALL;
-            if (isDoor != isEdge)
+
+            // a strict room needs all the corresponding doors for the edges
+            if (node.roomType != Node.ROOM_TYPE.DEFAULT)
+            {
+                if (isEdge)
+                {
+                    if (!isDoor) return false;
+                }
+            }
+            else if (/*node.roomType == Node.ROOM_TYPE.DEFAULT && */isDoor != isEdge)
                 return false;
         }
         return true;

@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 4836116453364013422}
   - component: {fileID: 4836116453364013419}
   m_Layer: 0
-  m_Name: Room9
+  m_Name: Room10
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -157,7 +157,7 @@ MonoBehaviour:
   connectedDoors:
   - {fileID: 136926192317726590}
   - {fileID: 8441451093288178057}
-  roomType: 1
+  roomType: 0
 --- !u!50 &4836116453364013419
 Rigidbody2D:
   serializedVersion: 4

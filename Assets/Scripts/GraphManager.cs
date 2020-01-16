@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Node
@@ -69,30 +70,47 @@ public class GraphManager : MonoBehaviour
         InitGraph(); // graph main path
 
         subPathsCount = Mathf.FloorToInt(primaryPathSize / 3);
-        for (int i = 0; i < subPathsCount; i++)
+
+        // creates sub paths automatically depending on the main path length
+        while (currentSecPathPoss.Count > 2)
         {
             CreateSubPath();
         }
+        // manual input
+        /*for (int i = 0; i < subPathsCount; i++)
+        {
+            CreateSubPath();
+        }*/
 
         PrintGraph();
     }
 
     void CreatePathAt(int length, int adjIndex = 0, bool isSecondary = false, uint offset = 0)
     {
+        int formerRoomCount = adj.Count();
+
         if (isSecondary)
         {
-            adj[adjIndex].adjacents.Last.Value.doorState = Door.STATE.CLOSED; // closes the door to the next main path room
-            adj[adjIndex + 1].adjacents.First.Value.doorState = Door.STATE.CLOSED; // closes the door at the other end (next room)
+            var nextBranchTry = adj[adjIndex - (int)offset];
+            if (CheckIfNodeIsSurrounded(nextBranchTry)) // temporary fix to try to find another possible branch (once only)
+                --offset;
 
             if (offset != 0) {
-                var nextBranchTry = adj[adjIndex - (int)offset];
-                if (nextBranchTry.adjacents.Count == 4 || nextBranchTry.name == "Start") // can't do a sub branch if no free path, nor if the node is the start (rule)
+                if (CheckIfNodeIsSurrounded(nextBranchTry) || nextBranchTry.roomType == Node.ROOM_TYPE.START) // can't do a sub branch if no free path, nor if the node is the start (rule)
                 {
                     Debug.Log("Couldn't do an offset of -" + offset + " on " + nextBranchTry.name + "(" + nextBranchTry.location.x + "," + nextBranchTry.location.y + ")");
                     offset = 0;
                 }
             }
+
             CreateNodeToNode(adj[adjIndex - (int)offset], "Sec" + (adjIndex - offset) + "_Generic0"); // creates the first room next to the chosen branch (at the end of the adj list)
+            if (adj.Count() > formerRoomCount) // create locked doors only if node really created
+            {
+                adj[adjIndex].adjacents.ElementAt(1).doorState = Door.STATE.CLOSED; // closes the door to the next main path room
+                adj[adjIndex + 1].adjacents.First.Value.doorState = Door.STATE.CLOSED; // closes the door at the other end (next room)
+            }
+            else
+                return; // tempo => couldn't create a path there (nor just before) anyway
         }
 
         // creates a path from the room (default is the latest room created)
@@ -100,6 +118,7 @@ public class GraphManager : MonoBehaviour
         {
             var nodeName = "";
             var roomType = Node.ROOM_TYPE.DEFAULT;
+
             if (isSecondary && i == length - 1)
             {
                 nodeName = "KeyRoom";
@@ -107,7 +126,20 @@ public class GraphManager : MonoBehaviour
             }
             else nodeName = "Generic" + (i + 1);
             if (isSecondary) nodeName = "Sec" + adjIndex + "_" + nodeName;
+
+            // create the node connected to the previous node in adj
             CreateNodeToNode(adj[adj.Count - 1], nodeName, roomType);
+
+
+            // forces the room to be a key room and return if the length couldn't be reached (dead end that forces to create a key room)
+            var createdNode = adj[adj.Count - 1];
+
+            // checks if there are rooms all around the created room, set it as the end of the sub path (as the key room)
+            if (CheckIfNodeIsSurrounded(createdNode))
+            {
+                createdNode.roomType = Node.ROOM_TYPE.KEYROOM;
+                return;
+            }
         }
     }
     void CreateSubPath(uint _offset = 0)
@@ -116,6 +148,16 @@ public class GraphManager : MonoBehaviour
         int nextRandomBranch = randomAvailableBranch();
         CreatePathAt(randomBranchLength, nextRandomBranch, true, _offset);
     }
+    bool CheckIfNodeIsSurrounded(Node node)
+    {
+        var roomsAroundNodePossLoc = new List<Vector2Int>();
+        foreach (Vector2Int dir in directions)
+        {
+            roomsAroundNodePossLoc.Add(node.location + dir);
+        }
+        // checks if there are rooms all around the room
+        return !roomsAroundNodePossLoc.Except(allLocations).Any();
+    }
 
     int currentMinimumBranchIndex = 0;
     // create a random branch between the current minimum branch (default = 0) and the median value in the current branch starting node possibilities
@@ -123,7 +165,7 @@ public class GraphManager : MonoBehaviour
     {
         var randSubPathStart = currentSecPathPoss[Random.Range(currentMinimumBranchIndex, (currentSecPathPoss.Count - currentMinimumBranchIndex) / 2)];
         //currentMinimumBranchIndex = randSubPathStart;
-        currentSecPathPoss.RemoveRange(0, currentSecPathPoss.FindIndex(i => i == randSubPathStart + 1));
+        currentSecPathPoss.RemoveRange(0, currentSecPathPoss.FindIndex(i => i == randSubPathStart));
         currentSecPathPoss.Remove(randSubPathStart);
         return randSubPathStart;
     }
@@ -163,9 +205,12 @@ public class GraphManager : MonoBehaviour
     void CreateNodeToNode(Node fromNode, string nodeName, Node.ROOM_TYPE roomType = Node.ROOM_TYPE.DEFAULT, Door.STATE state = Door.STATE.OPEN)
     {
         var node = new Node(nodeName, roomType);
-        // check exception : no path found (rooms all around)
+        // check exception : no path found (rooms all around) [Shouldn't ever be called]
         if (!InitNodeFrom(fromNode, node))
+        {
+            Debug.LogWarning("cannot create a room next to " + fromNode.name + " because it has rooms all around already");
             return;
+        }
         ConnectNodes(fromNode, node, state);
         adj.Add(node);
     }
